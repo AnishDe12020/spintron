@@ -175,11 +175,9 @@ func validColor(c string) bool {
 // Spinner struct to hold the provided options.
 type Spinner struct {
 	mu         *sync.RWMutex
-	Delay      time.Duration                 // Delay is the speed of the indicator
-	chars      []string                      // chars holds the chosen character set
-	Prefix     string                        // Prefix is the text preppended to the indicator
-	Suffix     string                        // Suffix is the text appended to the indicator
-	FinalMSG   string                        // string displayed after Stop() is called
+	Delay      time.Duration // Delay is the speed of the indicator
+	chars      []string      // chars holds the chosen character set
+	Text       string
 	lastOutput string                        // last character(set) written
 	color      func(a ...interface{}) string // default color is white
 	Writer     io.Writer                     // to make testing better, exported so users have access. Use `WithWriter` to update after initialization.
@@ -231,17 +229,9 @@ func WithColor(color string) Option {
 
 // WithSuffix adds the given string to the spinner
 // as the suffix.
-func WithSuffix(suffix string) Option {
+func WithSuffix(text string) Option {
 	return func(s *Spinner) {
-		s.Suffix = suffix
-	}
-}
-
-// WithFinalMSG adds the given string ot the spinner
-// as the final message to be written.
-func WithFinalMSG(finalMsg string) Option {
-	return func(s *Spinner) {
-		s.FinalMSG = finalMsg
+		s.Text = text
 	}
 }
 
@@ -306,14 +296,14 @@ func (s *Spinner) Start() {
 					var outColor string
 					if runtime.GOOS == "windows" {
 						if s.Writer == os.Stderr {
-							outColor = fmt.Sprintf("\r%s%s%s", s.Prefix, s.chars[i], s.Suffix)
+							outColor = fmt.Sprintf("\r%s%s", s.chars[i], s.Text)
 						} else {
-							outColor = fmt.Sprintf("\r%s%s%s", s.Prefix, s.color(s.chars[i]), s.Suffix)
+							outColor = fmt.Sprintf("\r%s%s", s.color(s.chars[i]), s.Text)
 						}
 					} else {
-						outColor = fmt.Sprintf("\r%s%s%s", s.Prefix, s.color(s.chars[i]), s.Suffix)
+						outColor = fmt.Sprintf("\r%s%s", s.color(s.chars[i]), s.Text)
 					}
-					outPlain := fmt.Sprintf("\r%s%s%s", s.Prefix, s.chars[i], s.Suffix)
+					outPlain := fmt.Sprintf("\r%s%s", s.chars[i], s.Text)
 					fmt.Fprint(s.Writer, outColor)
 					s.lastOutput = outPlain
 					delay := s.Delay
@@ -341,13 +331,7 @@ func (s *Spinner) Stop() {
 			fmt.Fprint(s.Writer, "\033[?25h")
 		}
 		s.erase()
-		if s.FinalMSG != "" {
-			if isWindowsTerminalOnWindows {
-				fmt.Fprint(s.Writer, "\r", s.FinalMSG)
-			} else {
-				fmt.Fprint(s.Writer, s.FinalMSG)
-			}
-		}
+
 		s.stopChan <- struct{}{}
 	}
 }

@@ -16,13 +16,6 @@ func main() {
 
 	s.UpdateCharSet(spinner.CharSets[9])  // Update spinner to use a different character set
 	s.UpdateSpeed(100 * time.Millisecond) // Update the speed the spinner spins at
-	s.Prefix = "prefixed text: "          // Prefix text before the spinner
-	time.Sleep(4 * time.Second)
-	s.Prefix = ""
-	s.Suffix = " :appended text" // Append text after the spinner
-	time.Sleep(4 * time.Second)
-
-	s.Prefix = "Colors: "
 
 	if err := s.Color("yellow"); err != nil {
 		log.Fatalln(err)
@@ -83,8 +76,6 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	s.FinalMSG = "Complete!\nNew line!\nAnother one!\n"
-
 	s.UpdateCharSet(spinner.CharSets[31])
 	s.Restart()
 
@@ -92,7 +83,6 @@ func main() {
 
 	s.Stop() // Stop the spinner
 
-	s.Prefix = "Earth! "
 	s.UpdateCharSet(spinner.CharSets[39])
 	s.Restart()
 
