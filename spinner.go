@@ -186,6 +186,7 @@ type Spinner struct {
 	HideCursor bool                          // hideCursor determines if the cursor is visible
 	PreUpdate  func(s *Spinner)              // will be triggered before every spinner update
 	PostUpdate func(s *Spinner)              // will be triggered after every spinner update
+	Symbol     string
 }
 
 // New provides a pointer to an instance of Spinner with the supplied options.
@@ -215,9 +216,9 @@ type Option func(*Spinner)
 // Options contains fields to configure the spinner.
 type Options struct {
 	Color      string
-	Suffix     string
-	FinalMSG   string
+	Text       string
 	HideCursor bool
+	Symbol     string
 }
 
 // WithColor adds the given color to the spinner.
@@ -229,9 +230,15 @@ func WithColor(color string) Option {
 
 // WithSuffix adds the given string to the spinner
 // as the suffix.
-func WithSuffix(text string) Option {
+func WithText(text string) Option {
 	return func(s *Spinner) {
 		s.Text = text
+	}
+}
+
+func WithSymbol(symbol string) Option {
+	return func(s *Spinner) {
+		s.Symbol = symbol
 	}
 }
 
@@ -296,14 +303,14 @@ func (s *Spinner) Start() {
 					var outColor string
 					if runtime.GOOS == "windows" {
 						if s.Writer == os.Stderr {
-							outColor = fmt.Sprintf("\r%s%s", s.chars[i], s.Text)
+							outColor = fmt.Sprintf("\r%s %s%s", s.Symbol, s.chars[i], s.Text)
 						} else {
-							outColor = fmt.Sprintf("\r%s%s", s.color(s.chars[i]), s.Text)
+							outColor = fmt.Sprintf("\r%s %s%s", s.Symbol, s.color(s.chars[i]), s.Text)
 						}
 					} else {
-						outColor = fmt.Sprintf("\r%s%s", s.color(s.chars[i]), s.Text)
+						outColor = fmt.Sprintf("\r%s %s%s", s.Symbol, s.color(s.chars[i]), s.Text)
 					}
-					outPlain := fmt.Sprintf("\r%s%s", s.chars[i], s.Text)
+					outPlain := fmt.Sprintf("\r%s %s%s", s.Symbol, s.chars[i], s.Text)
 					fmt.Fprint(s.Writer, outColor)
 					s.lastOutput = outPlain
 					delay := s.Delay
