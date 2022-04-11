@@ -4,7 +4,7 @@ package main
 import (
 	"time"
 
-	"github.com/briandowns/spinner"
+	"github.com/AnishDe12020/spintron"
 )
 
 func main() {
