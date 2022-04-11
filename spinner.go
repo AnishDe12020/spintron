@@ -343,6 +343,20 @@ func (s *Spinner) Stop() {
 	}
 }
 
+func (s *Spinner) StopAndPersist(symbol string, text string) {
+	s.Stop()
+
+	fmt.Fprintf(s.Writer, "\r%s %s%s", s.Symbol, symbol, text)
+}
+
+func (s *Spinner) Succeed(text string) {
+	s.StopAndPersist(Symbols["success"], text)
+}
+
+func (s *Spinner) Fail(text string) {
+	s.StopAndPersist(Symbols["failure"], text)
+}
+
 // Restart will stop and start the indicator.
 func (s *Spinner) Restart() {
 	s.Stop()
