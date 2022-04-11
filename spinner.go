@@ -370,7 +370,7 @@ func (s *Spinner) StopAndPersist(symbol string, text string) {
 		fullText = ""
 	}
 
-	fmt.Fprintf(s.Writer, "\r%s%s%s", fullSymbol, symbol, fullText)
+	fmt.Fprintf(s.Writer, "\r%s%s%s\n", fullSymbol, symbol, fullText)
 }
 
 func (s *Spinner) Succeed(text string) {
