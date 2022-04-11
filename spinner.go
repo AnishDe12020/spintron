@@ -356,7 +356,21 @@ func (s *Spinner) Stop() {
 func (s *Spinner) StopAndPersist(symbol string, text string) {
 	s.Stop()
 
-	fmt.Fprintf(s.Writer, "\r%s %s%s", s.Symbol, symbol, text)
+	var fullSymbol string
+	if s.Symbol != "" {
+		fullSymbol = s.Symbol + " "
+	} else {
+		fullSymbol = ""
+	}
+
+	var fullText string
+	if text != "" {
+		fullText = " " + text
+	} else {
+		fullText = ""
+	}
+
+	fmt.Fprintf(s.Writer, "\r%s%s%s", fullSymbol, symbol, fullText)
 }
 
 func (s *Spinner) Succeed(text string) {
