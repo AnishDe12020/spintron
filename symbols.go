@@ -1,9 +1,9 @@
 package spinner
 
 var Symbols = map[string]string{
-	"success": `✔`,
-	"failure": `✖`,
+	"success": `✅`,
+	"failure": `❌`,
 	"pending": `⌛`,
-	"warning": `⚠`,
+	"warning": `⚠️`,
 	"unicorn": `🦄`,
 }
