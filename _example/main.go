@@ -8,10 +8,14 @@ import (
 )
 
 func main() {
-	s := spinner.New(spinner.CharSets[11], 100*time.Millisecond, spinner.WithSymbol(spinner.Symbols["unicorn"])) // Build our new spinner
-	s.Color("red")                                                                                               // Set the spinner color to red
-	s.Start()                                                                                                    // Start the spinner
-	time.Sleep(1 * time.Second)                                                                                  // Run for some time to simulate work
+	s := spinner.New(spinner.Options{
+		Text:  "Loading",
+		Delay: time.Duration(400) * time.Millisecond,
+	})
+
+	s.Color("red")              // Set the spinner color to red
+	s.Start()                   // Start the spinner
+	time.Sleep(1 * time.Second) // Run for some time to simulate work
 	s.PrefixText = "Loading"
 	time.Sleep(1 * time.Second)
 	// s.Succeed("success")

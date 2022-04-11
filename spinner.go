@@ -191,10 +191,10 @@ type Spinner struct {
 }
 
 // New provides a pointer to an instance of Spinner with the supplied options.
-func New(cs []string, d time.Duration, options ...Option) *Spinner {
+func New(options Options) *Spinner {
 	s := &Spinner{
-		Delay:      d,
-		chars:      cs,
+		Delay:      100 * time.Millisecond,
+		chars:      CharSets[11],
 		color:      color.New(color.FgWhite).SprintFunc(),
 		mu:         &sync.RWMutex{},
 		Writer:     color.Output,
@@ -203,68 +203,53 @@ func New(cs []string, d time.Duration, options ...Option) *Spinner {
 		HideCursor: true,
 	}
 
-	for _, option := range options {
-		option(s)
+	if options.Writer != nil {
+		s.mu.Lock()
+		s.Writer = options.Writer
+		s.mu.Unlock()
+	}
+
+	if options.PrefixText != "" {
+		s.PrefixText = options.PrefixText
+	}
+
+	if options.Symbol != "" {
+		s.Symbol = options.Symbol
+	}
+
+	if options.HideCursor {
+		s.HideCursor = options.HideCursor
+	}
+
+	if options.Symbol != "" {
+		s.Symbol = options.Symbol
+	}
+
+	if options.Color != "" {
+		s.Color(options.Color)
+	}
+
+	if options.Text != "" {
+		s.Text = options.Text
+	}
+
+	if options.Delay != 0 {
+		s.Delay = options.Delay
 	}
 
 	return s
 }
 
-// Option is a function that takes a spinner and applies
-// a given configuration.
-type Option func(*Spinner)
-
 // Options contains fields to configure the spinner.
 type Options struct {
-	Color      string
-	Text       string
-	HideCursor bool
-	Symbol     string
-}
-
-// WithColor adds the given color to the spinner.
-func WithColor(color string) Option {
-	return func(s *Spinner) {
-		s.Color(color)
-	}
-}
-
-// WithSuffix adds the given string to the spinner
-// as the suffix.
-func WithText(text string) Option {
-	return func(s *Spinner) {
-		s.Text = text
-	}
-}
-
-func WithSymbol(symbol string) Option {
-	return func(s *Spinner) {
-		s.Symbol = symbol
-	}
-}
-
-// WithHiddenCursor hides the cursor
-// if hideCursor = true given.
-func WithHiddenCursor(hideCursor bool) Option {
-	return func(s *Spinner) {
-		s.HideCursor = hideCursor
-	}
-}
-
-// WithWriter adds the given writer to the spinner. This
-// function should be favored over directly assigning to
-// the struct value.
-func WithWriter(w io.Writer) Option {
-	return func(s *Spinner) {
-		s.mu.Lock()
-		s.Writer = w
-		s.mu.Unlock()
-	}
-}
-
-// Active will return whether or not the spinner is currently active.
-func (s *Spinner) Active() bool {
-	return s.active
+	Color        string
+	Text         string
+	HideCursor   bool
+	Symbol       string
+	PrefixText   string
+	CharacterSet []string
+	Writer       io.Writer
+	Delay        time.Duration
 }
 
 // Start will start the indicator.
