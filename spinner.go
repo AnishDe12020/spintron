@@ -187,6 +187,7 @@ type Spinner struct {
 	PreUpdate  func(s *Spinner)              // will be triggered before every spinner update
 	PostUpdate func(s *Spinner)              // will be triggered after every spinner update
 	Symbol     string
+	PrefixText string
 }
 
 // New provides a pointer to an instance of Spinner with the supplied options.
@@ -303,14 +304,14 @@ func (s *Spinner) Start() {
 					var outColor string
 					if runtime.GOOS == "windows" {
 						if s.Writer == os.Stderr {
-							outColor = fmt.Sprintf("\r%s %s%s", s.Symbol, s.chars[i], s.Text)
+							outColor = fmt.Sprintf("\r%s %s %s%s", s.Symbol, s.PrefixText, s.chars[i], s.Text)
 						} else {
-							outColor = fmt.Sprintf("\r%s %s%s", s.Symbol, s.color(s.chars[i]), s.Text)
+							outColor = fmt.Sprintf("\r%s %s %s%s", s.Symbol, s.PrefixText, s.color(s.chars[i]), s.Text)
 						}
 					} else {
-						outColor = fmt.Sprintf("\r%s %s%s", s.Symbol, s.color(s.chars[i]), s.Text)
+						outColor = fmt.Sprintf("\r%s %s %s%s", s.Symbol, s.PrefixText, s.color(s.chars[i]), s.Text)
 					}
-					outPlain := fmt.Sprintf("\r%s %s%s", s.Symbol, s.chars[i], s.Text)
+					outPlain := fmt.Sprintf("\r%s %s %s%s", s.Symbol, s.PrefixText, s.chars[i], s.Text)
 					fmt.Fprint(s.Writer, outColor)
 					s.lastOutput = outPlain
 					delay := s.Delay

@@ -12,6 +12,8 @@ func main() {
 	s.Color("red")                                                                                               // Set the spinner color to red
 	s.Start()                                                                                                    // Start the spinner
 	time.Sleep(1 * time.Second)                                                                                  // Run for some time to simulate work
+	s.PrefixText = "Loading"
+	time.Sleep(1 * time.Second)
 	// s.Succeed("success")
 	s.Fail("fail")
 
