@@ -1,4 +1,4 @@
-module github.com/briandowns/spinner
+module github.com/AnishDe12020/spintron
 
 go 1.14
 
