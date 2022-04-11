@@ -286,17 +286,41 @@ func (s *Spinner) Start() {
 						s.PreUpdate(s)
 					}
 
-					var outColor string
+					var fullSymbol string
+					if s.Symbol != "" {
+						fullSymbol = s.Symbol + " "
+					} else {
+						fullSymbol = ""
+					}
+
+					var fullPrefixText string
+					if s.PrefixText != "" {
+						fullPrefixText = s.PrefixText + " "
+					} else {
+						fullPrefixText = ""
+					}
+
+					var fullText string
+					if s.Text != "" {
+						fullText = " " + s.Text
+					} else {
+						fullText = ""
+					}
+
+					var charStyled string
 					if runtime.GOOS == "windows" {
 						if s.Writer == os.Stderr {
-							outColor = fmt.Sprintf("\r%s %s %s%s", s.Symbol, s.PrefixText, s.chars[i], s.Text)
+							charStyled = s.chars[i]
 						} else {
-							outColor = fmt.Sprintf("\r%s %s %s%s", s.Symbol, s.PrefixText, s.color(s.chars[i]), s.Text)
+							charStyled = s.color(s.chars[i])
 						}
 					} else {
-						outColor = fmt.Sprintf("\r%s %s %s%s", s.Symbol, s.PrefixText, s.color(s.chars[i]), s.Text)
+						charStyled = s.color(s.chars[i])
 					}
-					outPlain := fmt.Sprintf("\r%s %s %s%s", s.Symbol, s.PrefixText, s.chars[i], s.Text)
+
+					outColor := fmt.Sprintf("\r%s%s%s%s", fullSymbol, fullPrefixText, charStyled, fullText)
+					outPlain := fmt.Sprintf("\r%s%s%s%s", fullSymbol, fullPrefixText, s.chars[i], fullText)
+
 					fmt.Fprint(s.Writer, outColor)
 					s.lastOutput = outPlain
 					delay := s.Delay
