@@ -8,3 +8,7 @@ require (
 	github.com/mattn/go-colorable v0.1.2 // indirect
 	github.com/mattn/go-isatty v0.0.8
 )
+
+retract (
+    v1.18.2-0.20220411151637-2ebe53d2865d
+    )
