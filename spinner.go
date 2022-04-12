@@ -175,9 +175,9 @@ func validColor(c string) bool {
 // Spinner struct to hold the provided options.
 type Spinner struct {
 	mu         *sync.RWMutex
-	Delay      time.Duration // Delay is the speed of the indicator
-	chars      []string      // chars holds the chosen character set
-	Text       string
+	Delay      time.Duration                 // Delay is the speed of the indicator
+	chars      []string                      // chars holds the chosen character set
+	Text       string                        // Text shown after the Spinner
 	lastOutput string                        // last character(set) written
 	color      func(a ...interface{}) string // default color is white
 	Writer     io.Writer                     // to make testing better, exported so users have access. Use `WithWriter` to update after initialization.
@@ -186,8 +186,8 @@ type Spinner struct {
 	HideCursor bool                          // hideCursor determines if the cursor is visible
 	PreUpdate  func(s *Spinner)              // will be triggered before every spinner update
 	PostUpdate func(s *Spinner)              // will be triggered after every spinner update
-	Symbol     string
-	PrefixText string
+	Symbol     string                        // Symbol for the spinner, show before PrefixText
+	PrefixText string                        // PrefixText for the spinner, shown before the spinner and after the Symbol
 }
 
 // New provides a pointer to an instance of Spinner with the supplied options.
@@ -252,7 +252,7 @@ type Options struct {
 	Delay        time.Duration
 }
 
-// Start will start the indicator.
+// Start will start the spinner.
 func (s *Spinner) Start() {
 	s.mu.Lock()
 	if s.active || !isRunningInTerminal() {
@@ -337,7 +337,7 @@ func (s *Spinner) Start() {
 	}()
 }
 
-// Stop stops the indicator.
+// Stops the spinner.
 func (s *Spinner) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -353,6 +353,7 @@ func (s *Spinner) Stop() {
 	}
 }
 
+// Stops the spinner and prits out a message, used later for success, fail, etc.
 func (s *Spinner) StopAndPersist(symbol string, text string) {
 	s.Stop()
 
@@ -373,10 +374,12 @@ func (s *Spinner) StopAndPersist(symbol string, text string) {
 	fmt.Fprintf(s.Writer, "\r%s%s%s\n", fullSymbol, symbol, fullText)
 }
 
+// Stops the spinner and prints out a success message.
 func (s *Spinner) Succeed(text string) {
 	s.StopAndPersist(Symbols["success"], text)
 }
 
+// Stops the spinner and prints out a failure message.
 func (s *Spinner) Fail(text string) {
 	s.StopAndPersist(Symbols["failure"], text)
 }
