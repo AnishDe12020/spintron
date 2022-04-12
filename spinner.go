@@ -50,6 +50,7 @@ type Spinner struct {
 	PostUpdate func(s *Spinner)              // will be triggered after every spinner update
 	Symbol     string                        // Symbol for the spinner, show before PrefixText
 	PrefixText string                        // PrefixText for the spinner, shown before the spinner and after the Symbol
+	Padding    int                           // Padding for the spinner
 }
 
 // New provides a pointer to an instance of Spinner with the supplied options.
@@ -99,6 +100,10 @@ func New(options Options) *Spinner {
 		s.Delay = options.Delay
 	}
 
+	if options.Padding != 0 {
+		s.Padding = options.Padding
+	}
+
 	return s
 }
 
@@ -112,6 +117,7 @@ type Options struct {
 	CharacterSet []string
 	Writer       io.Writer
 	Delay        time.Duration
+	Padding      int
 }
 
 // Start will start the spinner.
@@ -180,8 +186,13 @@ func (s *Spinner) Start() {
 						charStyled = s.color(s.chars[i])
 					}
 
-					outColor := fmt.Sprintf("\r%s%s%s%s", fullSymbol, fullPrefixText, charStyled, fullText)
-					outPlain := fmt.Sprintf("\r%s%s%s%s", fullSymbol, fullPrefixText, s.chars[i], fullText)
+					var padding string
+					if s.Padding > 0 {
+						padding = strings.Repeat(" ", s.Padding)
+					}
+
+					outColor := fmt.Sprintf("\r%s%s%s%s%s", padding, fullSymbol, fullPrefixText, charStyled, fullText)
+					outPlain := fmt.Sprintf("\r%s%s%s%s%s", padding, fullSymbol, fullPrefixText, s.chars[i], fullText)
 
 					fmt.Fprint(s.Writer, outColor)
 					s.lastOutput = outPlain
@@ -233,7 +244,12 @@ func (s *Spinner) StopAndPersist(symbol string, text string) {
 		fullText = ""
 	}
 
-	fmt.Fprintf(s.Writer, "\r%s%s%s\n", fullSymbol, symbol, fullText)
+	var padding string
+	if s.Padding > 0 {
+		padding = strings.Repeat(" ", s.Padding)
+	}
+
+	fmt.Fprintf(s.Writer, "\r%s%s%s%s\n", padding, fullSymbol, symbol, fullText)
 }
 
 // Stops the spinner and prints out a success message.

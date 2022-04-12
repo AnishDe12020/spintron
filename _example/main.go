@@ -9,8 +9,9 @@ import (
 
 func main() {
 	s := spinner.New(spinner.Options{
-		Text:  "Loading",
-		Delay: time.Duration(400) * time.Millisecond,
+		Text:    "Loading",
+		Delay:   time.Duration(400) * time.Millisecond,
+		Padding: 2,
 	})
 
 	s.Color("red")              // Set the spinner color to red
