@@ -245,6 +245,11 @@ func (s *Spinner) Fail(text string) {
 	s.StopAndPersist(Symbols["failure"], text)
 }
 
+// Stops the spinner and prints out an info message.
+func (s *Spinner) Info(text string) {
+	s.StopAndPersist(Symbols["info"], text)
+}
+
 // Restart will stop and start the indicator.
 func (s *Spinner) Restart() {
 	s.Stop()

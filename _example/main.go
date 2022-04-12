@@ -19,7 +19,7 @@ func main() {
 	s.PrefixText = "Loading"
 	time.Sleep(1 * time.Second)
 	// s.Succeed("success")
-	s.Fail("fail")
+	s.Info("info")
 
 	// s.UpdateCharSet(spinner.CharSets[9])  // Update spinner to use a different character set
 	// s.UpdateSpeed(100 * time.Millisecond) // Update the speed the spinner spins at

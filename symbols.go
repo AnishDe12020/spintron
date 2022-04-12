@@ -7,4 +7,5 @@ var Symbols = map[string]string{
 	"pending": `⌛`,
 	"warning": `⚠️`,
 	"unicorn": `🦄`,
+	"info":    `ℹ️`,
 }
