@@ -26,6 +26,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	logSymbols "github.com/defaltd/log-symbols"
 	"github.com/fatih/color"
 	"github.com/mattn/go-isatty"
 )
@@ -237,17 +238,17 @@ func (s *Spinner) StopAndPersist(symbol string, text string) {
 
 // Stops the spinner and prints out a success message.
 func (s *Spinner) Succeed(text string) {
-	s.StopAndPersist(Symbols["success"], text)
+	s.StopAndPersist(logSymbols.SUCCESS, text)
 }
 
 // Stops the spinner and prints out a failure message.
 func (s *Spinner) Fail(text string) {
-	s.StopAndPersist(Symbols["failure"], text)
+	s.StopAndPersist(logSymbols.ERROR, text)
 }
 
 // Stops the spinner and prints out an info message.
 func (s *Spinner) Info(text string) {
-	s.StopAndPersist(Symbols["info"], text)
+	s.StopAndPersist(logSymbols.INFO, text)
 }
 
 // Restart will stop and start the indicator.

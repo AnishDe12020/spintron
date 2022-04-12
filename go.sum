@@ -1,3 +1,5 @@
+github.com/defaltd/log-symbols v0.0.0-20180904225809-59f0737fbf0d h1:ttghJ2lPK8gL+cAA0jre8/NdtGDeLGJ6hBCAtpApqtY=
+github.com/defaltd/log-symbols v0.0.0-20180904225809-59f0737fbf0d/go.mod h1:Zfnq/HiXVHUOnxBVkzRQTsi8v6q7XskOa8tVAQYjK6o=
 github.com/fatih/color v1.7.0 h1:DkWD4oS2D8LGGgTQ6IvwJJXSL5Vp2ffcQg58nFV38Ys=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
 github.com/mattn/go-colorable v0.1.2 h1:/bC9yWikZXAL9uJdulbSfyVNIR3n3trXl+v8+1sx8mU=
