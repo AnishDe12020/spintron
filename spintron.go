@@ -107,7 +107,7 @@ func New(options Options) *Spinner {
 		s.Padding = options.Padding
 	}
 
-	if options.ShowElaspedSeconds == false {
+	if options.DisableElaspedSeconds {
 		s.ShowElaspedSeconds = false
 	}
 
@@ -116,16 +116,16 @@ func New(options Options) *Spinner {
 
 // Options contains fields to configure the spinner.
 type Options struct {
-	Color              string
-	Text               string
-	HideCursor         bool
-	Symbol             string
-	PrefixText         string
-	CharacterSet       []string
-	Writer             io.Writer
-	Delay              time.Duration
-	Padding            int
-	ShowElaspedSeconds bool
+	Color                 string
+	Text                  string
+	HideCursor            bool
+	Symbol                string
+	PrefixText            string
+	CharacterSet          []string
+	Writer                io.Writer
+	Delay                 time.Duration
+	Padding               int
+	DisableElaspedSeconds bool
 }
 
 // Start will start the spinner.
