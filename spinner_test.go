@@ -17,7 +17,6 @@ package spinner
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"reflect"
 	"sync"
@@ -45,7 +44,10 @@ func (b *syncBuffer) Write(data []byte) (int, error) {
 // withOutput
 func withOutput(a []string, d time.Duration) (*Spinner, *syncBuffer) {
 	var out syncBuffer
-	s := New(a, d)
+	s := New(Options{
+		CharacterSet: a,
+		Delay:        d,
+	})
 	s.Writer = &out
 	return s, &out
 }
@@ -53,7 +55,10 @@ func withOutput(a []string, d time.Duration) (*Spinner, *syncBuffer) {
 // TestNew verifies that the returned instance is of the proper type
 func TestNew(t *testing.T) {
 	for i := 0; i < len(CharSets); i++ {
-		s := New(CharSets[i], 1*time.Second)
+		s := New(Options{
+			CharacterSet: CharSets[i],
+			Delay:        time.Millisecond * 100,
+		})
 		if reflect.TypeOf(s).String() != "*spinner.Spinner" {
 			t.Errorf("New returned incorrect type kind=%d", i)
 		}
@@ -62,32 +67,15 @@ func TestNew(t *testing.T) {
 
 // TestStart will verify a spinner can be started
 func TestStart(t *testing.T) {
-	s := New(CharSets[1], 100*time.Millisecond)
+	s := New(Options{
+		CharacterSet: CharSets[1],
+		Delay:        time.Millisecond * 100,
+	})
 	s.Color("red")
 	s.Start()
 	time.Sleep(baseWait * time.Second)
 	s.Stop()
 	time.Sleep(100 * time.Millisecond)
-}
-
-// TestActive will verify we can tell when a spinner is running
-func TestActive(t *testing.T) {
-	if !isatty.IsTerminal(os.Stdout.Fd()) {
-		t.Log("not running in a terminal")
-		return
-	}
-	s := New(CharSets[1], 100*time.Millisecond)
-	if s.Active() {
-		t.Error("expected a new spinner to not be active")
-	}
-	s.Start()
-	if !s.Active() {
-		t.Error("expected a started spinner to be active")
-	}
-	s.Stop()
-	if s.Active() {
-		t.Error("expected a stopped spinner to be active")
-	}
 }
 
 // TestStop will verify a spinner can be stopped
@@ -113,32 +101,16 @@ func TestStop(t *testing.T) {
 	p = nil
 }
 
-// TestRestart will verify a spinner can be stopped and started again
-func TestRestart(t *testing.T) {
-	s, out := withOutput(CharSets[4], 40*time.Millisecond)
-
-	s.Start()
-	time.Sleep(150 * time.Millisecond)
-	s.Restart()
-	time.Sleep(158 * time.Millisecond)
-	s.Stop()
-	time.Sleep(10 * time.Millisecond)
-
-	result := out.Bytes()
-	first := result[:len(result)/2]
-	second := result[len(result)/2:]
-	if !bytes.Equal(first, second) {
-		t.Errorf("expected restart output to match initial output. got=%q want=%q", first, second)
-	}
-}
-
 // TestHookFunctions will verify that hook functions works as expected
 func TestHookFunctions(t *testing.T) {
 	if !isatty.IsTerminal(os.Stdout.Fd()) {
 		t.Log("not running in a termian")
 		return
 	}
-	s := New(CharSets[4], 50*time.Millisecond)
+	s := New(Options{
+		CharacterSet: CharSets[1],
+		Delay:        time.Millisecond * 50,
+	})
 	var out syncBuffer
 	s.Writer = &out
 	s.PreUpdate = func(s *Spinner) {
@@ -168,7 +140,10 @@ func TestHookFunctions(t *testing.T) {
 
 // TestReverse will verify that the given spinner can stop and start again reversed
 func TestReverse(t *testing.T) {
-	a := New(CharSets[10], 1*time.Second)
+	a := New(Options{
+		CharacterSet: CharSets[1],
+		Delay:        time.Millisecond * 50,
+	})
 	a.Color("red")
 	a.Start()
 	time.Sleep(baseWait * time.Second)
@@ -184,7 +159,11 @@ func TestReverse(t *testing.T) {
 
 // TestUpdateSpeed verifies that the delay can be updated
 func TestUpdateSpeed(t *testing.T) {
-	s := New(CharSets[10], 1*time.Second)
+
+	s := New(Options{
+		CharacterSet: CharSets[1],
+		Delay:        time.Second * 1,
+	})
 	delay1 := s.Delay
 	s.UpdateSpeed(baseWait * time.Second)
 	delay2 := s.Delay
@@ -196,7 +175,11 @@ func TestUpdateSpeed(t *testing.T) {
 
 // TestUpdateCharSet verifies that character sets can be updated
 func TestUpdateCharSet(t *testing.T) {
-	s := New(CharSets[14], 1*time.Second)
+
+	s := New(Options{
+		CharacterSet: CharSets[14],
+		Delay:        time.Millisecond * 50,
+	})
 	charSet1 := s.chars
 	s.UpdateCharSet(CharSets[1])
 	charSet2 := s.chars
@@ -228,7 +211,11 @@ func TestBackspace(t *testing.T) {
 	// are broken for an indeterminant reason without a wait
 	time.Sleep(75 * time.Millisecond)
 	fmt.Println()
-	s := New(CharSets[0], 100*time.Millisecond)
+
+	s := New(Options{
+		CharacterSet: CharSets[0],
+		Delay:        time.Millisecond * 100,
+	})
 	s.Color("blue")
 	s.Start()
 	fmt.Print("This is on the same line as the spinner: ")
@@ -239,7 +226,10 @@ func TestBackspace(t *testing.T) {
 // TestColorError tests that if an invalid color string is passed to the Color
 // function, the invalid color error is returned
 func TestColorError(t *testing.T) {
-	s := New(CharSets[0], 100*time.Millisecond)
+	s := New(Options{
+		CharacterSet: CharSets[0],
+		Delay:        time.Millisecond * 100,
+	})
 
 	const invalidColorName = "bluez"
 	const validColorName = "green"
@@ -253,11 +243,6 @@ func TestColorError(t *testing.T) {
 	}
 }
 
-func TestWithWriter(t *testing.T) {
-	s := New(CharSets[9], time.Millisecond*400, WithWriter(ioutil.Discard))
-	_ = s
-}
-
 /*
 Benchmarks
 */
@@ -265,13 +250,19 @@ Benchmarks
 // BenchmarkNew runs a benchmark for the New() function
 func BenchmarkNew(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		New(CharSets[1], 1*time.Second)
+		New(Options{
+			CharacterSet: CharSets[0],
+			Delay:        time.Millisecond * 100,
+		})
 	}
 }
 
 func BenchmarkNewStartStop(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		s := New(CharSets[1], 1*time.Second)
+		s := New(Options{
+			CharacterSet: CharSets[1],
+			Delay:        time.Second * 1,
+		})
 		s.Start()
 		s.Stop()
 	}
