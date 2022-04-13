@@ -36,21 +36,22 @@ var isWindowsTerminalOnWindows = len(os.Getenv("WT_SESSION")) > 0 && runtime.GOO
 
 // Spinner struct to hold the provided options.
 type Spinner struct {
-	mu         *sync.RWMutex
-	Delay      time.Duration                 // Delay is the speed of the indicator
-	chars      []string                      // chars holds the chosen character set
-	Text       string                        // Text shown after the Spinner
-	lastOutput string                        // last character(set) written
-	color      func(a ...interface{}) string // default color is white
-	Writer     io.Writer                     // to make testing better, exported so users have access. Use `WithWriter` to update after initialization.
-	active     bool                          // active holds the state of the spinner
-	stopChan   chan struct{}                 // stopChan is a channel used to stop the indicator
-	HideCursor bool                          // hideCursor determines if the cursor is visible
-	PreUpdate  func(s *Spinner)              // will be triggered before every spinner update
-	PostUpdate func(s *Spinner)              // will be triggered after every spinner update
-	Symbol     string                        // Symbol for the spinner, show before PrefixText
-	PrefixText string                        // PrefixText for the spinner, shown before the spinner and after the Symbol
-	Padding    int                           // Padding for the spinner
+	mu             *sync.RWMutex
+	Delay          time.Duration                 // Delay is the speed of the indicator
+	chars          []string                      // chars holds the chosen character set
+	Text           string                        // Text shown after the Spinner
+	lastOutput     string                        // last character(set) written
+	color          func(a ...interface{}) string // default color is white
+	Writer         io.Writer                     // to make testing better, exported so users have access. Use `WithWriter` to update after initialization.
+	active         bool                          // active holds the state of the spinner
+	stopChan       chan struct{}                 // stopChan is a channel used to stop the indicator
+	HideCursor     bool                          // hideCursor determines if the cursor is visible
+	PreUpdate      func(s *Spinner)              // will be triggered before every spinner update
+	PostUpdate     func(s *Spinner)              // will be triggered after every spinner update
+	Symbol         string                        // Symbol for the spinner, show before PrefixText
+	PrefixText     string                        // PrefixText for the spinner, shown before the spinner and after the Symbol
+	Padding        int                           // Padding for the spinner
+	secondsElasped int                           // Number of seconds elapsed since the spinner was started
 }
 
 // New provides a pointer to an instance of Spinner with the supplied options.
@@ -136,6 +137,13 @@ func (s *Spinner) Start() {
 
 	go func() {
 		for {
+			s.secondsElasped += 1
+			time.Sleep(time.Second * 1)
+		}
+	}()
+
+	go func() {
+		for {
 			for i := 0; i < len(s.chars); i++ {
 				select {
 				case <-s.stopChan:
@@ -191,8 +199,10 @@ func (s *Spinner) Start() {
 						padding = strings.Repeat(" ", s.Padding)
 					}
 
-					outColor := fmt.Sprintf("\r%s%s%s%s%s", padding, fullSymbol, fullPrefixText, charStyled, fullText)
-					outPlain := fmt.Sprintf("\r%s%s%s%s%s", padding, fullSymbol, fullPrefixText, s.chars[i], fullText)
+					styledTimeElapsed := color.New(color.FgHiBlack).SprintFunc()(" [" + strconv.Itoa(s.secondsElasped) + "s]")
+
+					outColor := fmt.Sprintf("\r%s%s%s%s%s%s", padding, fullSymbol, fullPrefixText, charStyled, fullText, styledTimeElapsed)
+					outPlain := fmt.Sprintf("\r%s%s%s%s%s%v", padding, fullSymbol, fullPrefixText, s.chars[i], fullText, s.secondsElasped)
 
 					fmt.Fprint(s.Writer, outColor)
 					s.lastOutput = outPlain
