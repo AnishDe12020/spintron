@@ -60,7 +60,7 @@ func New(options Options) *Spinner {
 	s := &Spinner{
 		Delay:              100 * time.Millisecond,
 		chars:              CharSets[11],
-		color:              color.New(color.FgWhite).SprintFunc(),
+		color:              color.New(color.FgCyan).SprintFunc(),
 		mu:                 &sync.RWMutex{},
 		Writer:             color.Output,
 		stopChan:           make(chan struct{}, 1),
