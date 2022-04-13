@@ -208,7 +208,7 @@ func (s *Spinner) Start() {
 
 					var elaspedSeconds string
 
-					if s.ShowElaspedSeconds == true {
+					if s.ShowElaspedSeconds {
 						elaspedSeconds = color.New(color.FgHiBlack).SprintFunc()(" [" + strconv.Itoa(s.secondsElasped) + "s]")
 					} else {
 						elaspedSeconds = ""
