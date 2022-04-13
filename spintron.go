@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Package spinner is a simple package to add a spinner / progress indicator to any terminal application.
-package spinner
+package spintron
 
 import (
 	"fmt"

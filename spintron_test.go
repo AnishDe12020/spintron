@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package spinner
+package spintron
 
 import (
 	"bytes"
@@ -59,7 +59,7 @@ func TestNew(t *testing.T) {
 			CharacterSet: CharSets[i],
 			Delay:        time.Millisecond * 100,
 		})
-		if reflect.TypeOf(s).String() != "*spinner.Spinner" {
+		if reflect.TypeOf(s).String() != "*spintron.Spinner" {
 			t.Errorf("New returned incorrect type kind=%d", i)
 		}
 	}

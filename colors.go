@@ -1,4 +1,4 @@
-package spinner
+package spintron
 
 import (
 	"errors"

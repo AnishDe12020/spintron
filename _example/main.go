@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	s := spinner.New(spinner.Options{
+	s := spintron.New(spintron.Options{
 		Text:    "Loading",
 		Delay:   time.Duration(400) * time.Millisecond,
 		Padding: 2,
