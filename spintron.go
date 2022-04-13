@@ -36,35 +36,37 @@ var isWindowsTerminalOnWindows = len(os.Getenv("WT_SESSION")) > 0 && runtime.GOO
 
 // Spinner struct to hold the provided options.
 type Spinner struct {
-	mu             *sync.RWMutex
-	Delay          time.Duration                 // Delay is the speed of the indicator
-	chars          []string                      // chars holds the chosen character set
-	Text           string                        // Text shown after the Spinner
-	lastOutput     string                        // last character(set) written
-	color          func(a ...interface{}) string // default color is white
-	Writer         io.Writer                     // to make testing better, exported so users have access. Use `WithWriter` to update after initialization.
-	active         bool                          // active holds the state of the spinner
-	stopChan       chan struct{}                 // stopChan is a channel used to stop the indicator
-	HideCursor     bool                          // hideCursor determines if the cursor is visible
-	PreUpdate      func(s *Spinner)              // will be triggered before every spinner update
-	PostUpdate     func(s *Spinner)              // will be triggered after every spinner update
-	Symbol         string                        // Symbol for the spinner, show before PrefixText
-	PrefixText     string                        // PrefixText for the spinner, shown before the spinner and after the Symbol
-	Padding        int                           // Padding for the spinner
-	secondsElasped int                           // Number of seconds elapsed since the spinner was started
+	mu                 *sync.RWMutex
+	Delay              time.Duration                 // Delay is the speed of the indicator
+	chars              []string                      // chars holds the chosen character set
+	Text               string                        // Text shown after the Spinner
+	lastOutput         string                        // last character(set) written
+	color              func(a ...interface{}) string // default color is white
+	Writer             io.Writer                     // to make testing better, exported so users have access. Use `WithWriter` to update after initialization.
+	active             bool                          // active holds the state of the spinner
+	stopChan           chan struct{}                 // stopChan is a channel used to stop the indicator
+	HideCursor         bool                          // hideCursor determines if the cursor is visible
+	PreUpdate          func(s *Spinner)              // will be triggered before every spinner update
+	PostUpdate         func(s *Spinner)              // will be triggered after every spinner update
+	Symbol             string                        // Symbol for the spinner, show before PrefixText
+	PrefixText         string                        // PrefixText for the spinner, shown before the spinner and after the Symbol
+	Padding            int                           // Padding for the spinner
+	ShowElaspedSeconds bool                          // ShowElaspedSeconds determines if the spinner should show the elapsed time
+	secondsElasped     int                           // Number of seconds elapsed since the spinner was started
 }
 
 // New provides a pointer to an instance of Spinner with the supplied options.
 func New(options Options) *Spinner {
 	s := &Spinner{
-		Delay:      100 * time.Millisecond,
-		chars:      CharSets[11],
-		color:      color.New(color.FgWhite).SprintFunc(),
-		mu:         &sync.RWMutex{},
-		Writer:     color.Output,
-		stopChan:   make(chan struct{}, 1),
-		active:     false,
-		HideCursor: true,
+		Delay:              100 * time.Millisecond,
+		chars:              CharSets[11],
+		color:              color.New(color.FgWhite).SprintFunc(),
+		mu:                 &sync.RWMutex{},
+		Writer:             color.Output,
+		stopChan:           make(chan struct{}, 1),
+		active:             false,
+		HideCursor:         true,
+		ShowElaspedSeconds: true,
 	}
 
 	if options.Writer != nil {
@@ -105,20 +107,25 @@ func New(options Options) *Spinner {
 		s.Padding = options.Padding
 	}
 
+	if options.ShowElaspedSeconds == false {
+		s.ShowElaspedSeconds = false
+	}
+
 	return s
 }
 
 // Options contains fields to configure the spinner.
 type Options struct {
-	Color        string
-	Text         string
-	HideCursor   bool
-	Symbol       string
-	PrefixText   string
-	CharacterSet []string
-	Writer       io.Writer
-	Delay        time.Duration
-	Padding      int
+	Color              string
+	Text               string
+	HideCursor         bool
+	Symbol             string
+	PrefixText         string
+	CharacterSet       []string
+	Writer             io.Writer
+	Delay              time.Duration
+	Padding            int
+	ShowElaspedSeconds bool
 }
 
 // Start will start the spinner.
@@ -199,9 +206,15 @@ func (s *Spinner) Start() {
 						padding = strings.Repeat(" ", s.Padding)
 					}
 
-					styledTimeElapsed := color.New(color.FgHiBlack).SprintFunc()(" [" + strconv.Itoa(s.secondsElasped) + "s]")
+					var elaspedSeconds string
 
-					outColor := fmt.Sprintf("\r%s%s%s%s%s%s", padding, fullSymbol, fullPrefixText, charStyled, fullText, styledTimeElapsed)
+					if s.ShowElaspedSeconds == true {
+						elaspedSeconds = color.New(color.FgHiBlack).SprintFunc()(" [" + strconv.Itoa(s.secondsElasped) + "s]")
+					} else {
+						elaspedSeconds = ""
+					}
+
+					outColor := fmt.Sprintf("\r%s%s%s%s%s%s", padding, fullSymbol, fullPrefixText, charStyled, fullText, elaspedSeconds)
 					outPlain := fmt.Sprintf("\r%s%s%s%s%s%v", padding, fullSymbol, fullPrefixText, s.chars[i], fullText, s.secondsElasped)
 
 					fmt.Fprint(s.Writer, outColor)
