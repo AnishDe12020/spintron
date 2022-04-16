@@ -290,6 +290,11 @@ func (s *Spinner) Info(text string) {
 	s.StopAndPersist(logSymbols.INFO, text)
 }
 
+// Stops the spinner and prints out a unicorn message.
+func (s *Spinner) Unicorn(text string) {
+	s.StopAndPersist("🦄", text)
+}
+
 // Restart will stop and start the indicator.
 func (s *Spinner) Restart() {
 	s.Stop()
