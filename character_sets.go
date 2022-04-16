@@ -16,6 +16,7 @@
 
 package spintron
 
+// Character sets to be used as the spinners
 var CharSets = map[string][]string{
 	"dots": {
 		"⠋",
