@@ -59,7 +59,7 @@ type Spinner struct {
 func New(options Options) *Spinner {
 	s := &Spinner{
 		Delay:              100 * time.Millisecond,
-		chars:              CharSets[11],
+		chars:              CharSets["dots2"],
 		color:              color.New(color.FgCyan).SprintFunc(),
 		mu:                 &sync.RWMutex{},
 		Writer:             color.Output,
