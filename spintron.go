@@ -128,7 +128,7 @@ type Options struct {
 	DisableElaspedSeconds bool
 }
 
-// Start will start the spinner.
+// Starts the spinner
 func (s *Spinner) Start() {
 	s.mu.Lock()
 	if s.active || !isRunningInTerminal() {
@@ -233,7 +233,7 @@ func (s *Spinner) Start() {
 	}()
 }
 
-// Stops the spinner.
+// Stops the spinner
 func (s *Spinner) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -249,7 +249,7 @@ func (s *Spinner) Stop() {
 	}
 }
 
-// Stops the spinner and prits out a message, used later for success, fail, etc.
+// Stops the spinner and prints out a symbol with text passed in as arguments
 func (s *Spinner) StopAndPersist(symbol string, text string) {
 	s.Stop()
 
