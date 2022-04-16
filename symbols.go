@@ -1,11 +1,11 @@
 package spintron
 
-// Some pre-made symbols for the package
+// Some pre-defined symbols for the package
 var Symbols = map[string]string{
-	"success": `✅`,
-	"failure": `❌`,
+	"success": `✔`,
+	"failure": `✖`,
 	"pending": `⌛`,
-	"warning": `⚠️`,
+	"warning": `⚠`,
 	"unicorn": `🦄`,
-	"info":    `ℹ️`,
+	"info":    `ℹ`,
 }
