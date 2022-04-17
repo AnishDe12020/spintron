@@ -9,9 +9,7 @@ import (
 
 func main() {
 	s := spintron.New(spintron.Options{
-		Text:                  "Loading",
-		Delay:                 time.Duration(100) * time.Millisecond,
-		DisableElaspedSeconds: false,
+		Text: "Loading",
 	})
 
 	s.Start() // Start the spinner
