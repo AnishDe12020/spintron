@@ -2,6 +2,19 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/AnishDe12020/spintron.svg)](https://pkg.go.dev/github.com/AnishDe12020/spintron)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/AnishDe12020/spintron)
 
+## Features
+- Start/Stop
+- Customizable character sets (spinners)
+- Custom spinner color, background	
+- Custom spinner text
+- Restarting and reversing the spinner
+- Prefixed text
+- Changing spinner settings while it is active
+- Getting the spinner settings values
+- Chain, pipe or redirect output
+- Ability to Stop and persist the spinner with custom text and a symbol
+- Pre-built `Succeed`, `Fail` and `Info` functions that stops and persists the spinner with pre-defined cross-platform symbol and text
+
 ## Usage
 ```go
 import "github.com/AnishDe12020/spintron"
