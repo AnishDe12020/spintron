@@ -8,10 +8,11 @@
 - Custom spinner color, background	
 - Custom spinner text
 - Restarting and reversing the spinner
-- Prefixed text
+- Prefixed text, symbol and padding before the spinner
 - Changing spinner settings while it is active
 - Getting the spinner settings values
 - Chain, pipe or redirect output
+- Shows the seconds elasped since the spinner started (can be disabled)
 - Ability to Stop and persist the spinner with custom text and a symbol
 - Pre-built `Succeed`, `Fail` and `Info` functions that stops and persists the spinner with pre-defined cross-platform symbol and text
 
@@ -35,6 +36,78 @@ func main() {
 		s.Success("Downloaded the file successfully") // Stops the spinner and shows a success sign with the given text
 	}
 }
+```
+## Options
+When a new spinner is created, it can be created with a struct of options. Here are the ones available - 
+### Color (string) (default: cyan)
+The color of the spinner
+### Text (string)
+The text after the spinner
+### HideCursor (bool) (defaukt: true)
+Hide the cursor or not
+### Symbol (string)
+A symbol that will come before the prefix text
+### PrefixText (string)
+Text that will come before the spinner
+### CharacterSet (string) (default: dots2)
+Character set used for the spinner
+### Writer (io.Writer) (default: color.Output)
+stdOut writer
+### Delay (time.Duration) (default: 100 ms)
+Delay between frames in the character set
+### Padding (int)
+Number of chatacters in padding on the left of the spinner
+### DisableElaspedSeconds (bool) (default: false)
+Disable the elasped seconds timer
+
+
+## Examples
+### Reversing the spinner
+```go
+time.Sleep(time.Second * 2) // Simulate a long running process
+s.Reverse() // Reverse the spinner's character set
+s.Text = "I have been reversed"
+time.Sleep(time.Second * 2) // Simulate a long running process
+s.Stop() // Stops the spinner
+```
+### Updating the spinner color
+```go
+time.Sleep(time.Second * 2)                // Simulate a long running process
+s.UpdateCharSet(spintron.CharSets["moon"]) // Update spinner to use a different character set
+s.Text = "My character set has been updated"
+time.Sleep(time.Second * 2) // Simulate a long running process
+s.Stop()                    // Stops the spinner
+```
+### Updating the spinner speed
+```go
+time.Sleep(time.Second * 2)                         // Simulate a long running process
+s.UpdateSpeed(time.Duration(50) * time.Millisecond) // Update spinner to use a different speed, here making it twice that of the default speed
+s.Text = "My speed has been updated to make me faster"
+time.Sleep(time.Second * 2) // Simulate a long running process
+s.Stop()                    // Stops the spinner
+```
+### Adding padding to the spinner
+```go
+time.Sleep(time.Second * 2) // Simulate a long running process
+s.Padding = 10              // Add a padding of 10 characters to the left of the spinner
+s.Text = "My padding has been updated"
+time.Sleep(time.Second * 2) // Simulate a long running process
+s.Stop()                    // Stops the spinner
+```
+### Stop and persist the spinner
+```go
+time.Sleep(time.Second * 2)   // Simulate a long running process
+s.StopAndPersist("👀", "Heya") // Stops the spinner and persists it with a custom symbol and text
+```
+### Succeeding, Failing or stopping the spinner with an info message
+```go
+s.Succeed("Done!") // Stops the spinner and persists it with a success sign and message
+```
+```go
+s.Fail("Uh oh! Something went wrong!") // Stops the spinner and persists it with an error sign and message
+```
+```go
+s.Info("Star the repo") // Stops the spinner and persists it with an info sign and message
 ```
 
 ## Credits
