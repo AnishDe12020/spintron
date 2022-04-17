@@ -86,6 +86,30 @@ s.Text = "My speed has been updated to make me faster"
 time.Sleep(time.Second * 2) // Simulate a long running process
 s.Stop()                    // Stops the spinner
 ```
+### Adding padding to the spinner
+```go
+time.Sleep(time.Second * 2) // Simulate a long running process
+s.Padding = 10              // Add a padding of 10 characters to the left of the spinner
+s.Text = "My padding has been updated"
+time.Sleep(time.Second * 2) // Simulate a long running process
+s.Stop()                    // Stops the spinner
+```
+### Stop and persist the spinner
+```go
+time.Sleep(time.Second * 2)   // Simulate a long running process
+s.StopAndPersist("👀", "Heya") // Stops the spinner and persists it with a custom symbol and text
+```
+### Succeeding, Failing or stopping the spinner with an info message
+```go
+s.Succeed("Done!") // Stops the spinner and persists it with a success sign and message
+```
+```go
+s.Fail("Uh oh! Something went wrong!") // Stops the spinner and persists it with an error sign and message
+```
+```go
+s.Info("Star the repo") // Stops the spinner and persists it with an info sign and message
+```
+
 ## Credits
 
 All commits uptil [561dc95](https://github.com/AnishDe12020/spinner/commit/561dc95eeadf7fc57c2fe6ce2253f0f3361c0f75) are made by [Brian Downs](https://github.com/briandowns) and the contributors to the [original repository, briandowns/spinner](https://github.com/briandowns/spinner). The project has since been renamed to Spintron to differentiate from the original project.
